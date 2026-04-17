@@ -121,7 +121,7 @@ npm run pm2:restart
 
 ### Automatic free deploy with Railway
 
-This repo now includes a GitHub Actions workflow that deploys the backend automatically on every push to `master`.
+This repo includes a GitHub Actions workflow that deploys the backend automatically on every push to `master`.
 
 1. Create a free Railway account: https://railway.app
 2. Create or connect a project and copy the project ID.
@@ -135,10 +135,19 @@ The workflow file is located at:
 
 - `.github/workflows/deploy.yml`
 
-To check status:
+### Docker deployment
 
-```powershell
-npm run pm2:status
+This repo also includes a root-level `Dockerfile` and `.dockerignore`.
+
+If Railway is still failing to detect Node, deploy using the Dockerfile by selecting the Docker builder in Railway, or use any platform that supports Docker.
+
+### Docker build commands
+
+If you deploy manually with Docker:
+
+```bash
+docker build -t agroinsight .
+docker run -p 3000:3000 --env-file agroinsight/backend/.env agroinsight
 ```
 
 ---
