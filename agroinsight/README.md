@@ -68,6 +68,63 @@ npm start          # plain node
 
 Open `http://localhost:3000` — the frontend and API are served together.
 
+### Permanent local startup
+
+On Windows PowerShell:
+
+```powershell
+cd backend
+.\start.ps1
+```
+
+Or with a custom port:
+
+```powershell
+cd backend
+.\start.ps1 -Port 3001
+```
+
+On Windows CMD:
+
+```cmd
+cd backend
+start.bat 3000
+```
+
+### Permanent background startup with PM2
+
+From the backend folder, install PM2 locally if needed:
+
+```powershell
+cd backend
+npm install
+```
+
+Then start the app in the background:
+
+```powershell
+cd backend
+npm run pm2:start
+```
+
+To stop it:
+
+```powershell
+npm run pm2:stop
+```
+
+To restart it:
+
+```powershell
+npm run pm2:restart
+```
+
+To check status:
+
+```powershell
+npm run pm2:status
+```
+
 ---
 
 ## 🌐 API Reference

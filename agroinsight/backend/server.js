@@ -110,7 +110,17 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 3000;
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ Port ${PORT} is already in use.`);
+    console.error('   Stop the process using that port or set PORT to a free port.');
+    process.exit(1);
+  }
+  throw err;
+});
+
 server.listen(PORT, () => {
   console.log(`\n🌾 AgroInsight server running on port ${PORT}`);
   console.log(`   Environment : ${process.env.NODE_ENV || 'development'}`);
