@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroInsight Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="form-card card">
+      <div class="header">
+        <div>
+          <div class="section-label">AgroInsight</div>
+          <h1 id="auth-heading">Welcome back</h1>
+          <p class="subtitle">Secure data collection and analytics for agricultural planning. Sign in or create an account to continue.</p>
+        </div>
+      </div>
+
+      <form id="auth-form">
+        <div class="form-group" id="group-name" style="display:none;">
+          <label for="name">Full name</label>
+          <input id="name" type="text" placeholder="Your full name" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" />
+        </div>
+        <button id="submit-button" class="button-primary" type="submit">Sign in</button>
+      </form>
+
+      <div class="toast" id="auth-message"></div>
+
+      <div class="footer-bar" style="margin-top:1.5rem; justify-content:space-between; gap:1rem;">
+        <span id="toggle-text">New to AgroInsight?</span>
+        <button id="toggle-button" class="button-secondary" type="button">Register</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

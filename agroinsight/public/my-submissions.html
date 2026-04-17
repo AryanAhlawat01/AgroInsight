@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroInsight — My Submissions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <style>
+    body { background: linear-gradient(180deg, #0D150C 0%, #111E13 100%); }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; gap: 1rem; }
+    .nav-logo { font-size: 1.2rem; font-weight: 700; color: #D4A853; letter-spacing: 0.04em; }
+    .nav-actions { display: flex; gap: 0.8rem; align-items: center; }
+    .nav-actions a, .nav-actions button { text-decoration: none; }
+    .page-header { max-width: 980px; margin: 2rem auto 1rem; padding: 0 1.5rem; }
+    .page-header .section-label { color: #AAB29A; letter-spacing: 0.14em; font-size: 0.82rem; text-transform: uppercase; }
+    .page-header h1 { font-size: clamp(2rem, 4vw, 3.2rem); margin: 0.6rem 0 0.9rem; line-height: 1.05; color: #F5EDD6; }
+    .page-header p { color: rgba(245,237,214,0.78); max-width: 740px; line-height: 1.75; }
+    .action-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.2rem 0 1rem; }
+    .download-message {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(212,168,83,0.18);
+      color: #F5EDD6;
+      font-size: 0.95rem;
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .download-message.error { background: rgba(232,93,38,0.18); border-color: rgba(232,93,38,0.35); color: #FFD7BB; }
+    .download-message.success { background: rgba(92,138,60,0.18); border-color: rgba(92,138,60,0.35); color: #E9F4DB; }
+    .card { max-width: 1120px; margin: 0 auto 1.5rem; }
+    .table-wrapper { padding: 1.5rem; }
+    .page-note { color: rgba(245,237,214,0.7); margin-top: 1rem; }
+
+    @media (max-width: 900px) {
+      nav { flex-direction: column; align-items: stretch; padding: 1rem 1rem; gap: 1rem; }
+      .nav-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+      .nav-actions a,
+      .nav-actions button { width: 100%; }
+      .page-header { padding: 0 1rem; }
+      .action-row { flex-direction: column; align-items: stretch; }
+      .card { padding: 1.2rem; }
+      .table-wrapper { overflow-x: auto; }
+      table th,
+      table td { padding: 0.85rem 0.7rem; }
+      .page-header h1 { font-size: clamp(1.7rem, 8vw, 2.6rem); }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">🌾 AgroInsight</div>
+    <div class="nav-actions">
+      <a href="/" class="button-secondary">Home</a>
+      <button id="btn-logout" class="button-secondary" type="button">Logout</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="page-header">
+      <div class="section-label">Secure Profile</div>
+      <h1>My Submissions</h1>
+      <p>Review the entries you submitted, download your data, and keep your agricultural contribution organized in one place.</p>
+    </section>
+
+    <section class="card">
+      <div class="action-row">
+        <button id="btn-download-csv" class="button-primary" type="button">Download CSV</button>
+        <button id="btn-download-json" class="button-secondary" type="button">Download JSON</button>
+      </div>
+      <div id="download-message" class="download-message" role="status" aria-live="polite">Click a download button to export your submissions.</div>
+      <div class="metric-card" style="margin-top:0.8rem;">
+        <p id="user-meta">Loading your profile and submissions…</p>
+      </div>
+    </section>
+
+    <section class="card table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>State / District</th>
+            <th>Land Size</th>
+            <th>Irrigation</th>
+            <th>Crops</th>
+            <th>Well Depth</th>
+            <th>Submitted At</th>
+          </tr>
+        </thead>
+        <tbody id="submissions-body">
+          <tr><td colspan="6">Loading entries…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <p class="page-note">Your download includes only records that belong to your account. If you want to submit more data, return to the homepage and use the submission form.</p>
+    </section>
+  </main>
+
+  <script>
+    const TOKEN_KEY = 'agroinsight_token';
+    const API_BASE = '/api';
+    const getAuthHeaders = () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      return token ? { Authorization: 'Bearer ' + token } : {};
+    };
+
+    const API = {
+      async get(endpoint) {
+        const response = await fetch(API_BASE + '/' + endpoint, { headers: getAuthHeaders() });
+        if (!response.ok) {
+          throw new Error('Authentication required');
+        }
+        return response.json();
+      }
+    };
+
+    async function fetchUser() {
+      try {
+        const data = await API.get('auth/me');
+        return data.data;
+      } catch (err) {
+        localStorage.removeItem(TOKEN_KEY);
+        window.location.href = '/login.html';
+      }
+    }
+
+    function renderRows(records) {
+      const body = document.getElementById('submissions-body');
+      if (!records?.length) {
+        body.innerHTML = '<tr><td colspan="6">No submissions found yet. Submit the first record from the homepage.</td></tr>';
+        return;
+      }
+
+      const rowHtml = records.map(r => {
+        const irrigation = r.irrigation_src ? r.irrigation_src.replace(/_/g, ' ') : '—';
+        const crops = [r.kharif_crop, r.rabi_crop].filter(Boolean).join(' / ') || '—';
+        const size = r.land_size ? `${r.land_size} ha` : '—';
+        const depth = r.well_depth ? `${r.well_depth}m` : '—';
+        const created = r.createdAt ? new Date(r.createdAt).toLocaleString() : '—';
+        return `
+          <tr>
+            <td>${r.state || '—'} / ${r.district || '—'}</td>
+            <td>${size}</td>
+            <td>${irrigation}</td>
+            <td>${crops}</td>
+            <td>${depth}</td>
+            <td>${created}</td>
+          </tr>
+        `;
+      }).join('');
+
+      body.innerHTML = rowHtml;
+    }
+
+    async function loadSubmissions() {
+      const me = await fetchUser();
+      const info = document.getElementById('user-meta');
+      info.textContent = `Signed in as ${me.name || me.email} · ${me.email}`;
+
+      try {
+        const response = await API.get('submissions?mine=true&limit=200');
+        renderRows(response.data || []);
+      } catch (err) {
+        document.getElementById('submissions-body').innerHTML = '<tr><td colspan="6">Unable to fetch your submissions. Please try again.</td></tr>';
+      }
+    }
+
+    async function exportMine(format) {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const url = `/api/export?format=${format}&mine=true`;
+      try {
+        const response = await fetch(url, {
+          headers: { Authorization: 'Bearer ' + token },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Download failed' }));
+          throw new Error(errorData.error || 'Download failed');
+        }
+
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `agroinsight_mine.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+        showDownloadMessage('Download started. Check your browser downloads folder.', 'success');
+      } catch (err) {
+        showDownloadMessage(err.message || 'Unable to download your data. Please try again.', 'error');
+      }
+    }
+
+    let downloadMessageTimeout = null;
+
+    function showDownloadMessage(message, type = '') {
+      const el = document.getElementById('download-message');
+      if (!el) return;
+      el.textContent = message;
+      el.classList.toggle('success', type === 'success');
+      el.classList.toggle('error', type === 'error');
+
+      if (downloadMessageTimeout) {
+        clearTimeout(downloadMessageTimeout);
+      }
+
+      downloadMessageTimeout = setTimeout(() => {
+        el.textContent = 'Click a download button to export your submissions.';
+        el.classList.remove('success', 'error');
+        downloadMessageTimeout = null;
+      }, 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btn-download-csv').addEventListener('click', () => exportMine('csv'));
+      document.getElementById('btn-download-json').addEventListener('click', () => exportMine('json'));
+      document.getElementById('btn-logout').addEventListener('click', () => {
+        localStorage.removeItem(TOKEN_KEY);
+        window.location.href = '/';
+      });
+      loadSubmissions();
+    });
+  </script>
+</body>
+</html>
