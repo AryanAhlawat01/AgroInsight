@@ -156,3 +156,45 @@ pm2 startup
 | `ALLOWED_ORIGINS` | `*` | Comma-separated CORS origins |
 | `RATE_LIMIT_WINDOW_MS` | `900000` | Rate limit window (ms) |
 | `RATE_LIMIT_MAX` | `200` | Max requests per window |
+
+## 🚀 Free Deployment
+
+This project is ready for free Node.js hosting. The app serves the static frontend from `frontend/` through the backend server in `backend/`.
+
+### Recommended free hosts
+
+- Railway: easiest for Node.js + MongoDB free tier
+- Render: free web service for static and Node apps
+
+### Deploy with Railway
+
+1. Create a Railway account.
+2. Add a new project from GitHub and connect your repo.
+3. Set the root directory to `agroinsight/backend`.
+4. Use these settings:
+   - Build command: `npm install`
+   - Start command: `npm start`
+5. Add environment variables:
+   - `MONGODB_URI`
+   - `PORT` (optional; Railway provides one automatically)
+   - `NODE_ENV=production`
+   - `ALLOWED_ORIGINS=*` (or your site URL)
+6. Deploy.
+
+### Deploy with Render
+
+1. Create a Render account.
+2. Create a new Web Service and connect your GitHub repo.
+3. Set the root directory to `agroinsight/backend`.
+4. Use these settings:
+   - Environment: `Node 18`
+   - Build command: `npm install`
+   - Start command: `npm start`
+5. Add the same environment variables as above.
+6. Deploy.
+
+### Notes
+
+- The backend serves `frontend/` automatically, so you do not need a separate frontend service.
+- `backend/Procfile` is included for compatibility with services that support Procfile deployment.
+- Use MongoDB Atlas free tier for a production-ready database.
