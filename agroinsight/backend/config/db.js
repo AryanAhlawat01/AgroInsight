@@ -2,8 +2,16 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  const uri = process.env.MONGODB_URI;
+
+  if (!uri || typeof uri !== 'string') {
+    console.error('❌ MONGODB_URI is not defined.');
+    console.error('   Set the MONGODB_URI environment variable to a valid MongoDB connection string.');
+    process.exit(1);
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    const conn = await mongoose.connect(uri, {
       // Mongoose 8+ handles these defaults automatically
     });
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);

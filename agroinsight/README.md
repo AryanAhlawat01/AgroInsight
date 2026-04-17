@@ -182,8 +182,13 @@ docker run -p 3000:3000 --env-file agroinsight/backend/.env agroinsight
 1. Push to GitHub
 2. Go to [railway.app](https://railway.app), create a project
 3. Add a **MongoDB** plugin (or use Atlas)
-4. Set env vars: `MONGODB_URI`, `NODE_ENV=production`, `PORT=3000`
+4. Set env vars:
+   - `MONGODB_URI` = your MongoDB connection string (required)
+   - `NODE_ENV=production`
+   - `ALLOWED_ORIGINS=*`
 5. Deploy — Railway auto-detects Node.js
+
+> Do not set `MONGODB_URI` to `mongodb://localhost:27017/...` on Railway. Use a cloud database URI from MongoDB Atlas or the Railway MongoDB plugin.
 
 ### Option B — Render
 1. Create a new **Web Service**, connect your repo
