@@ -8,30 +8,27 @@ A full-stack Node.js + MongoDB web application for collecting and visualising ag
 
 ```
 agroinsight/
-├── server.js                 ← Express entry point
-├── package.json
-├── .env.example              ← Copy to .env and fill in values
+├── backend/                  ← Node.js API server + backend packages
+│   ├── server.js             ← Express entry point
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── .env.example          ← Copy to .env and fill in values
+│   ├── config/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   └── scripts/
+│
+├── frontend/                 ← Static frontend assets served by backend
+│   ├── index.html
+│   ├── login.html
+│   ├── dashboard.html
+│   ├── my-submissions.html
+│   ├── css/
+│   └── js/
+│
 ├── .gitignore
-│
-├── config/
-│   └── db.js                 ← MongoDB connection (Mongoose)
-│
-├── models/
-│   └── Submission.js         ← Mongoose schema + indexes
-│
-├── routes/
-│   ├── submissions.js        ← CRUD: POST/GET/DELETE submissions
-│   ├── analytics.js          ← Aggregation: stats, land, irrigation, crops, wells
-│   └── export.js             ← CSV / JSON data export
-│
-├── middleware/
-│   └── errorHandler.js       ← Global 404 + error handler
-│
-├── scripts/
-│   └── seed.js               ← One-time DB seed with sample data
-│
-└── public/
-    └── index.html            ← Frontend (served as static files)
+└── README.md
 ```
 
 ---
@@ -44,22 +41,26 @@ agroinsight/
 
 ### 2. Install dependencies
 ```bash
+cd backend
 npm install
 ```
 
 ### 3. Configure environment
 ```bash
+cd backend
 cp .env.example .env
 # Edit .env — set MONGODB_URI at minimum
 ```
 
 ### 4. Seed sample data (optional)
 ```bash
+cd backend
 npm run seed
 ```
 
 ### 5. Start development server
 ```bash
+cd backend
 npm run dev        # uses nodemon for auto-restart
 # or
 npm start          # plain node

@@ -79,7 +79,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // ─── Serve Static Frontend ────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth',        authRoutes);
@@ -102,7 +102,7 @@ app.get('/health', (req, res) => {
 
 // ─── Catch-all → serve classic frontend routes ───────────────────────────────
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
 // ─── Error Handlers ───────────────────────────────────────────────────────────
