@@ -119,6 +119,22 @@ To restart it:
 npm run pm2:restart
 ```
 
+### Automatic free deploy with Railway
+
+This repo now includes a GitHub Actions workflow that deploys the backend automatically on every push to `master`.
+
+1. Create a free Railway account: https://railway.app
+2. Create or connect a project and copy the project ID.
+3. Create a Railway API key.
+4. In your GitHub repository, add these secrets:
+   - `RAILWAY_API_KEY`
+   - `RAILWAY_PROJECT_ID`
+5. Push to `master` and GitHub Actions will build and deploy the backend from `agroinsight/backend`.
+
+The workflow file is located at:
+
+- `.github/workflows/deploy.yml`
+
 To check status:
 
 ```powershell
