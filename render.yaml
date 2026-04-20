@@ -1,0 +1,38 @@
+# =============================================
+# render.yaml — Deploy AgroInsight on Render.com (FREE tier)
+# =============================================
+# Render free tier: https://render.com
+# - 1 free Web Service (spins down after inactivity)
+# - Free MongoDB via MongoDB Atlas (512 MB)
+#
+# Steps to deploy:
+#   1. Push project to GitHub
+#   2. Go to https://render.com → New → Blueprint
+#   3. Connect your GitHub repo
+#   4. Render reads this file and auto-deploys
+
+services:
+  - type: web
+    name: agroinsight-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    plan: free          # Free tier
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        sync: false
+      # Add MONGODB_URI manually in Render dashboard (keep secret!)
+      - key: MONGODB_URI
+        sync: false     # Render will prompt you to fill this in the dashboard
+      - key: FRONTEND_URL
+        value: https://your-backend-service.onrender.com
+      - key: CORS_ORIGINS
+        value: https://your-backend-service.onrender.com
+      - key: ALLOW_RESET_TOKEN_RESPONSE
+        value: "false"

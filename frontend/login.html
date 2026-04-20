@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroInsight Login</title>
+<style>
+  :root {
+    --earth: #2D4A1E;
+    --wheat: #D4A853;
+    --cream: #F5EDD6;
+    --dark: #121C0A;
+    --leaf: #5C8A3C;
+    --accent: #E85D26;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 10% 15%, rgba(92,138,60,0.25) 0, transparent 35%),
+      radial-gradient(circle at 85% 80%, rgba(232,93,38,0.18) 0, transparent 33%),
+      linear-gradient(160deg, #111908 0%, #0B1206 55%, #171008 100%);
+    color: var(--cream);
+    font-family: "DM Sans", "Segoe UI", sans-serif;
+    padding: 1rem;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(245,237,214,0.06);
+    border: 1px solid rgba(212,168,83,0.2);
+    backdrop-filter: blur(8px);
+    padding: 1.4rem;
+  }
+
+  .brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--wheat);
+  }
+
+  .subtitle {
+    opacity: 0.8;
+    font-size: 0.92rem;
+    margin-bottom: 1rem;
+  }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tab {
+    border: 1px solid rgba(245,237,214,0.2);
+    background: transparent;
+    color: var(--cream);
+    padding: 0.55rem;
+    cursor: pointer;
+  }
+
+  .tab.active {
+    border-color: var(--wheat);
+    color: var(--wheat);
+    background: rgba(45,74,30,0.55);
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  label {
+    opacity: 0.75;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  input {
+    width: 100%;
+    background: rgba(245,237,214,0.09);
+    border: 1px solid rgba(245,237,214,0.2);
+    color: var(--cream);
+    padding: 0.65rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--wheat);
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+  }
+
+  .btn {
+    border: 1px solid rgba(212,168,83,0.4);
+    color: var(--dark);
+    background: var(--wheat);
+    padding: 0.7rem 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .btn.secondary {
+    background: transparent;
+    color: var(--cream);
+  }
+
+  .msg {
+    margin-top: 0.85rem;
+    font-size: 0.88rem;
+    min-height: 1.2rem;
+  }
+
+  .ok { color: #8DE39B; }
+  .err { color: #FFB49A; }
+
+  .tiny {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    opacity: 0.85;
+    color: var(--wheat);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .reset-box {
+    margin-top: 0.85rem;
+    border-top: 1px dashed rgba(245,237,214,0.2);
+    padding-top: 0.75rem;
+  }
+
+  @media (max-width: 520px) {
+    .card { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">AgroInsight</div>
+    <div class="subtitle">Login or create account to submit and download your entries.</div>
+
+    <div class="tabs">
+      <button id="tab-login" class="tab active" onclick="switchMode('login')">Login</button>
+      <button id="tab-register" class="tab" onclick="switchMode('register')">Register</button>
+    </div>
+
+    <div id="name-row" class="row" style="display:none">
+      <label for="name">Full Name</label>
+      <input id="name" type="text" placeholder="Your name">
+    </div>
+
+    <div class="row">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+
+    <div class="row">
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password">
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="submitAuth()">Continue</button>
+      <button class="btn secondary" onclick="window.location.href='/'">Back</button>
+    </div>
+
+    <button class="tiny" onclick="toggleReset()">Forgot password?</button>
+
+    <div id="reset-box" class="reset-box" style="display:none">
+      <div class="row">
+        <label for="reset-token">Reset Token</label>
+        <input id="reset-token" type="text" placeholder="Paste reset token">
+      </div>
+      <div class="actions">
+        <button class="btn secondary" onclick="requestResetToken()">Get Token</button>
+        <button class="btn" onclick="resetPasswordNow()">Reset Password</button>
+      </div>
+    </div>
+
+    <div id="msg" class="msg"></div>
+  </div>
+
+<script>
+let mode = 'login';
+let resetVisible = false;
+
+function switchMode(next) {
+  mode = next;
+  document.getElementById('tab-login').classList.toggle('active', next === 'login');
+  document.getElementById('tab-register').classList.toggle('active', next === 'register');
+  document.getElementById('name-row').style.display = next === 'register' ? 'flex' : 'none';
+}
+
+function toggleReset() {
+  resetVisible = !resetVisible;
+  document.getElementById('reset-box').style.display = resetVisible ? 'block' : 'none';
+}
+
+function setMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + (type || '');
+}
+
+async function submitAuth() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const name = document.getElementById('name').value.trim();
+
+  if (!email || !password || (mode === 'register' && !name)) {
+    setMsg('Please fill all required fields.', 'err');
+    return;
+  }
+
+  const endpoint = mode === 'register' ? '/api/auth/register' : '/api/auth/login';
+  const payload = mode === 'register' ? { name, email, password } : { email, password };
+
+  try {
+    setMsg('Please wait...', '');
+    const r = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await r.json();
+    if (!r.ok || !data.success) {
+      throw new Error(data.error || 'Authentication failed');
+    }
+
+    localStorage.setItem('agro_token', data.token);
+    localStorage.setItem('agro_user', JSON.stringify(data.user));
+
+    setMsg('Success. Redirecting...', 'ok');
+
+    const qs = new URLSearchParams(window.location.search);
+    const next = qs.get('next') || '/profile.html';
+    setTimeout(() => {
+      window.location.href = next;
+    }, 450);
+  } catch (err) {
+    setMsg(err.message, 'err');
+  }
+}
+
+async function requestResetToken() {
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    setMsg('Enter your email first.', 'err');
+    return;
+  }
+
+  try {
+    setMsg('Generating token...', '');
+    const r = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) throw new Error(data.error || 'Failed to generate token');
+
+    if (data.resetToken) {
+      document.getElementById('reset-token').value = data.resetToken;
+      setMsg('Reset token generated. Use it now to set a new password.', 'ok');
+    } else {
+      setMsg(data.message || 'If account exists, token generated.', 'ok');
+    }
+  } catch (err) {
+    setMsg(err.message, 'err');
+  }
+}
+
+async function resetPasswordNow() {
+  const token = document.getElementById('reset-token').value.trim();
+  const password = document.getElementById('password').value;
+  if (!token || !password) {
+    setMsg('Provide reset token and new password.', 'err');
+    return;
+  }
+
+  try {
+    setMsg('Resetting password...', '');
+    const r = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) throw new Error(data.error || 'Password reset failed');
+    setMsg('Password reset successful. You can now login.', 'ok');
+    switchMode('login');
+  } catch (err) {
+    setMsg(err.message, 'err');
+  }
+}
+</script>
+</body>
+</html>

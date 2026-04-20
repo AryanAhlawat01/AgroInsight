@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My AgroInsight Profile</title>
+<style>
+  :root {
+    --earth: #2D4A1E;
+    --wheat: #D4A853;
+    --cream: #F5EDD6;
+    --dark: #111908;
+    --line: rgba(245,237,214,0.15);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "DM Sans", "Segoe UI", sans-serif;
+    background: linear-gradient(170deg, #101707 0%, #0A1105 70%, #161006 100%);
+    color: var(--cream);
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.45rem;
+    color: var(--wheat);
+  }
+
+  .brand-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(212,168,83,0.45);
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 30% 30%, rgba(92,138,60,0.45), rgba(45,74,30,0.35));
+    font-size: 1.2rem;
+  }
+
+  .last-updated {
+    margin-top: 0.25rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--wheat);
+    opacity: 0.8;
+  }
+
+  .sub {
+    opacity: 0.7;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  .btn {
+    border: 1px solid rgba(212,168,83,0.4);
+    background: rgba(245,237,214,0.07);
+    color: var(--cream);
+    padding: 0.55rem 0.8rem;
+    cursor: pointer;
+  }
+
+  .btn.primary {
+    background: var(--wheat);
+    color: #1f1705;
+    font-weight: 700;
+  }
+
+  .btn.danger {
+    border-color: rgba(197, 75, 75, 0.6);
+    background: rgba(197, 75, 75, 0.12);
+    color: #ffd9d9;
+  }
+
+  .btn.small {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .toolbar {
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .panel {
+    background: rgba(245,237,214,0.05);
+    border: 1px solid var(--line);
+    padding: 0.9rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+
+  th, td {
+    border-bottom: 1px solid rgba(245,237,214,0.08);
+    text-align: left;
+    padding: 0.65rem;
+    font-size: 0.88rem;
+  }
+
+  th {
+    color: var(--wheat);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .meta {
+    margin-top: 0.6rem;
+    font-size: 0.83rem;
+    opacity: 0.75;
+  }
+
+  .msg {
+    margin-top: 0.5rem;
+    min-height: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .edit-panel {
+    margin-top: 0.9rem;
+    border: 1px solid rgba(245,237,214,0.2);
+    background: rgba(245,237,214,0.04);
+    padding: 0.9rem;
+  }
+
+  .edit-panel h3 {
+    margin: 0 0 0.8rem;
+    font-size: 1rem;
+    color: var(--wheat);
+  }
+
+  .edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .edit-actions {
+    margin-top: 0.8rem;
+    display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .profile-card {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(212,168,83,0.5);
+    background: rgba(245,237,214,0.08);
+  }
+
+  .logo-note {
+    margin-top: 0.45rem;
+    font-size: 0.72rem;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .form-row {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .form-row label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+  }
+
+  .form-row input,
+  .form-row select {
+    background: rgba(245,237,214,0.08);
+    border: 1px solid rgba(245,237,214,0.22);
+    color: var(--cream);
+    padding: 0.55rem 0.65rem;
+  }
+
+  .form-row input:focus,
+  .form-row select:focus {
+    outline: none;
+    border-color: var(--wheat);
+  }
+
+  @media (max-width: 620px) {
+    .brand-mark { width: 36px; height: 36px; font-size: 1rem; }
+    .profile-card { grid-template-columns: 1fr; }
+    .avatar { width: 82px; height: 82px; }
+    table, thead, tbody, th, td, tr { display: block; width: 100%; }
+    thead { display: none; }
+    tr { border: 1px solid var(--line); margin-bottom: 0.6rem; }
+    td { border-bottom: 1px solid rgba(245,237,214,0.06); }
+    td:last-child { border-bottom: none; }
+    .edit-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand-head">
+        <div class="brand-mark">🌾</div>
+        <div>
+          <h1 id="profile-title">AgroInsight Workspace</h1>
+          <div id="profile-sub" class="sub">Loading...</div>
+          <div id="last-updated" class="last-updated">Last updated: --</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" onclick="window.location.href='/'">Dashboard</button>
+        <button class="btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary" onclick="downloadMine('csv')">Download My CSV</button>
+      <button class="btn primary" onclick="downloadMine('json')">Download My JSON</button>
+      <button class="btn" onclick="loadMine()">Refresh</button>
+    </div>
+
+    <div class="panel" style="margin-bottom: 0.85rem;">
+      <div class="profile-card">
+        <div>
+          <img id="avatar-preview" class="avatar" alt="AgroInsight Logo">
+          <div class="logo-note">Official Logo</div>
+        </div>
+        <div>
+          <div class="form-row">
+            <label for="profile-name">Display Name</label>
+            <input id="profile-name" type="text" placeholder="Your name">
+          </div>
+          <button class="btn" onclick="saveProfile()">Save Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>District</th>
+            <th>Land</th>
+            <th>Irrigation</th>
+            <th>Well Depth</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="edit-panel" class="edit-panel hidden">
+        <h3>Edit Entry</h3>
+        <div class="edit-grid">
+          <div class="form-row">
+            <label for="edit-state">State</label>
+            <input id="edit-state" type="text" maxlength="100" required>
+          </div>
+          <div class="form-row">
+            <label for="edit-district">District</label>
+            <input id="edit-district" type="text" maxlength="100" required>
+          </div>
+          <div class="form-row">
+            <label for="edit-land-size">Land Size (ha)</label>
+            <input id="edit-land-size" type="number" step="0.01" min="0" max="10000">
+          </div>
+          <div class="form-row">
+            <label for="edit-irrigation">Irrigation Source</label>
+            <select id="edit-irrigation">
+              <option value="">-- Select --</option>
+              <option value="canal">Canal</option>
+              <option value="tube_well">Tube Well</option>
+              <option value="open_well">Open Well</option>
+              <option value="tank">Tank</option>
+              <option value="rainfed">Rainfed</option>
+              <option value="drip">Drip</option>
+              <option value="sprinkler">Sprinkler</option>
+              <option value="river">River</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="edit-well-depth">Well Depth (m)</label>
+            <input id="edit-well-depth" type="number" step="0.01" min="0" max="1000">
+          </div>
+          <div class="form-row">
+            <label for="edit-kharif">Kharif Crop</label>
+            <input id="edit-kharif" type="text" maxlength="100">
+          </div>
+          <div class="form-row">
+            <label for="edit-rabi">Rabi Crop</label>
+            <input id="edit-rabi" type="text" maxlength="100">
+          </div>
+          <div class="form-row">
+            <label for="edit-notes">Notes</label>
+            <input id="edit-notes" type="text" maxlength="1000">
+          </div>
+        </div>
+        <div class="edit-actions">
+          <button class="btn primary" onclick="updateEntry()">Save Changes</button>
+          <button class="btn" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+      <div id="meta" class="meta"></div>
+      <div id="msg" class="msg"></div>
+    </div>
+  </div>
+
+<script>
+function getToken() {
+  return localStorage.getItem('agro_token');
+}
+
+function getUser() {
+  try {
+    return JSON.parse(localStorage.getItem('agro_user') || 'null');
+  } catch (_) {
+    return null;
+  }
+}
+
+function setMsg(text) {
+  document.getElementById('msg').textContent = text || '';
+}
+
+function setLastUpdated(ts) {
+  const el = document.getElementById('last-updated');
+  if (!el) return;
+  const when = ts ? new Date(ts) : new Date();
+  el.textContent = 'Last updated: ' + when.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function refreshAvatar() {
+  const avatar = document.getElementById('avatar-preview');
+  avatar.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"%3E%3Cdefs%3E%3CradialGradient id="g" cx="30%25" cy="25%25" r="75%25"%3E%3Cstop offset="0%25" stop-color="%235c8a3c"/%3E%3Cstop offset="100%25" stop-color="%232d4a1e"/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width="240" height="240" rx="120" fill="url(%23g)"/%3E%3Ccircle cx="120" cy="120" r="98" fill="none" stroke="%23d4a853" stroke-width="8" opacity="0.85"/%3E%3Ctext x="120" y="126" text-anchor="middle" fill="%23f5edd6" font-family="Arial" font-size="76"%3E%F0%9F%8C%BE%3C/text%3E%3C/svg%3E';
+}
+
+function logout() {
+  localStorage.removeItem('agro_token');
+  localStorage.removeItem('agro_user');
+  window.location.href = '/login.html';
+}
+
+let myEntries = [];
+let editingEntryId = null;
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderRows() {
+  const tbody = document.getElementById('rows');
+  if (!myEntries.length) {
+    tbody.innerHTML = '<tr><td colspan="7">No entries yet. Submit data from dashboard.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = myEntries.map((x) => {
+    const dt = x.createdAt ? new Date(x.createdAt).toLocaleString() : '—';
+    return `<tr>
+      <td>${escapeHtml(x.state || '—')}</td>
+      <td>${escapeHtml(x.district || '—')}</td>
+      <td>${x.land_size != null ? escapeHtml(x.land_size + ' ha') : '—'}</td>
+      <td>${escapeHtml(x.irrigation_src || '—')}</td>
+      <td>${x.well_depth != null ? escapeHtml(x.well_depth + 'm') : '—'}</td>
+      <td>${escapeHtml(dt)}</td>
+      <td>
+        <div class="actions">
+          <button class="btn small" data-action="edit" data-id="${escapeHtml(x._id)}">Edit</button>
+          <button class="btn small danger" data-action="delete" data-id="${escapeHtml(x._id)}">Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function startEdit(entryId) {
+  const item = myEntries.find((x) => x._id === entryId);
+  if (!item) {
+    setMsg('Entry not found. Please refresh.');
+    return;
+  }
+
+  editingEntryId = entryId;
+  document.getElementById('edit-state').value = item.state || '';
+  document.getElementById('edit-district').value = item.district || '';
+  document.getElementById('edit-land-size').value = item.land_size ?? '';
+  document.getElementById('edit-irrigation').value = item.irrigation_src || '';
+  document.getElementById('edit-well-depth').value = item.well_depth ?? '';
+  document.getElementById('edit-kharif').value = item.kharif_crop || '';
+  document.getElementById('edit-rabi').value = item.rabi_crop || '';
+  document.getElementById('edit-notes').value = item.notes || '';
+
+  document.getElementById('edit-panel').classList.remove('hidden');
+  document.getElementById('edit-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setMsg('Editing selected entry.');
+}
+
+function cancelEdit() {
+  editingEntryId = null;
+  document.getElementById('edit-panel').classList.add('hidden');
+  setMsg('Edit canceled.');
+}
+
+async function updateEntry() {
+  const token = getToken();
+  if (!token) {
+    window.location.href = '/login.html?next=%2Fprofile.html';
+    return;
+  }
+  if (!editingEntryId) {
+    setMsg('Please choose an entry to edit.');
+    return;
+  }
+
+  const state = document.getElementById('edit-state').value.trim();
+  const district = document.getElementById('edit-district').value.trim();
+  if (!state || !district) {
+    setMsg('State and District are required.');
+    return;
+  }
+
+  const payload = {
+    state,
+    district,
+    land_size: document.getElementById('edit-land-size').value === '' ? null : Number(document.getElementById('edit-land-size').value),
+    irrigation_src: document.getElementById('edit-irrigation').value || null,
+    well_depth: document.getElementById('edit-well-depth').value === '' ? null : Number(document.getElementById('edit-well-depth').value),
+    kharif_crop: document.getElementById('edit-kharif').value.trim() || null,
+    rabi_crop: document.getElementById('edit-rabi').value.trim() || null,
+    notes: document.getElementById('edit-notes').value.trim() || null,
+  };
+
+  try {
+    setMsg('Saving changes...');
+    const r = await fetch('/api/submissions/' + editingEntryId, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) {
+      throw new Error(data.error || 'Failed to update entry');
+    }
+
+    cancelEdit();
+    await loadMine();
+    setMsg('Entry updated successfully.');
+  } catch (err) {
+    setMsg(err.message);
+  }
+}
+
+async function deleteEntry(entryId) {
+  const token = getToken();
+  if (!token) {
+    window.location.href = '/login.html?next=%2Fprofile.html';
+    return;
+  }
+  if (!window.confirm('Delete this entry permanently?')) return;
+
+  try {
+    setMsg('Deleting entry...');
+    const r = await fetch('/api/submissions/' + entryId, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) {
+      throw new Error(data.error || 'Failed to delete entry');
+    }
+
+    if (editingEntryId === entryId) cancelEdit();
+    await loadMine();
+    setMsg('Entry deleted successfully.');
+  } catch (err) {
+    setMsg(err.message);
+  }
+}
+
+async function loadMine() {
+  const token = getToken();
+  if (!token) {
+    window.location.href = '/login.html?next=%2Fprofile.html';
+    return;
+  }
+
+  setMsg('Loading your entries...');
+  try {
+    const r = await fetch('/api/submissions/mine?limit=200', {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) {
+      throw new Error(data.error || 'Failed to load entries');
+    }
+
+    myEntries = Array.isArray(data.data) ? data.data : [];
+    renderRows();
+
+    document.getElementById('meta').textContent = `Total entries: ${data.total}`;
+    setLastUpdated();
+    setMsg('');
+  } catch (err) {
+    setMsg(err.message);
+  }
+}
+
+async function saveProfile() {
+  const token = getToken();
+  if (!token) {
+    window.location.href = '/login.html?next=%2Fprofile.html';
+    return;
+  }
+
+  const payload = {
+    name: document.getElementById('profile-name').value.trim(),
+  };
+
+  if (!payload.name) {
+    setMsg('Name is required.');
+    return;
+  }
+
+  try {
+    setMsg('Saving profile...');
+    const r = await fetch('/api/auth/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    if (!r.ok || !data.success) throw new Error(data.error || 'Failed to save profile');
+
+    localStorage.setItem('agro_user', JSON.stringify(data.user));
+    document.getElementById('profile-title').textContent = 'AgroInsight Workspace';
+    refreshAvatar();
+    setLastUpdated();
+    setMsg('Profile updated.');
+  } catch (err) {
+    setMsg(err.message);
+  }
+}
+
+async function downloadMine(fmt) {
+  const token = getToken();
+  if (!token) {
+    window.location.href = '/login.html?next=%2Fprofile.html';
+    return;
+  }
+
+  try {
+    setMsg('Preparing download...');
+    const r = await fetch('/api/export/mine?format=' + fmt, {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.error || 'Download failed');
+    }
+
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fmt === 'csv' ? 'my_entries.csv' : 'my_entries.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setLastUpdated();
+    setMsg('Download started.');
+  } catch (err) {
+    setMsg(err.message);
+  }
+}
+
+(function init() {
+  const rows = document.getElementById('rows');
+  rows.addEventListener('click', (event) => {
+    const btn = event.target.closest('button[data-action][data-id]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-action');
+    const entryId = btn.getAttribute('data-id');
+    if (!entryId) return;
+
+    if (action === 'edit') startEdit(entryId);
+    if (action === 'delete') deleteEntry(entryId);
+  });
+
+  const user = getUser();
+  if (user) {
+    document.getElementById('profile-title').textContent = 'AgroInsight Workspace';
+    document.getElementById('profile-sub').textContent = user.email || '';
+    document.getElementById('profile-name').value = user.name || '';
+    refreshAvatar();
+  } else {
+    document.getElementById('profile-sub').textContent = 'Please login to access your profile.';
+    refreshAvatar();
+  }
+  setLastUpdated();
+  loadMine();
+})();
+</script>
+</body>
+</html>

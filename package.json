@@ -1,0 +1,12 @@
+{
+  "name": "agroinsight",
+  "version": "1.0.0",
+  "description": "AgroInsight — National Agricultural Assessment Platform (Full Stack)",
+  "private": true,
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "dev": "cd backend && npm run dev",
+    "start": "cd backend && npm start",
+    "setup": "node -e \"const fs=require('fs');const p='backend/.env';const e='backend/.env.example';if(!fs.existsSync(p)&&fs.existsSync(e)){fs.copyFileSync(e,p);console.log('Created backend/.env from .env.example')}\" && cd backend && npm install && echo 'Setup complete. Edit backend/.env then run: npm run dev'"
+  }
+}
