@@ -2495,7 +2495,7 @@ document.querySelectorAll('.animate-in').forEach(el => {
 });
 </script>
 
-<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
 
 <!-- API Integration -->
 <script>
@@ -2513,6 +2513,8 @@ const AUTH = {
     }
   },
 };
+
+const SOCKET_SERVER_URL = 'https://agroinsight-1.onrender.com';
 
 function goToLogin() {
   const target = encodeURIComponent(window.location.pathname || '/');
@@ -2976,7 +2978,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (luInit) luInit.textContent = new Date().toLocaleString();
 
   if (typeof io === 'function') {
-    const socket = io();
+    const socket = io(SOCKET_SERVER_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
+    });
     socket.on('online:count', (payload) => {
       const el = document.getElementById('online-count');
       if (el) el.textContent = String(payload && payload.count ? payload.count : 0);
