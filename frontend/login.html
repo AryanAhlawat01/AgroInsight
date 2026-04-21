@@ -222,6 +222,26 @@ function setMsg(text, type) {
   el.className = 'msg ' + (type || '');
 }
 
+async function readApiResponse(response) {
+  const raw = await response.text();
+  let data = null;
+
+  try {
+    data = raw ? JSON.parse(raw) : null;
+  } catch (_err) {
+    data = null;
+  }
+
+  const notFoundText = typeof raw === 'string' && /not found/i.test(raw);
+  const error = data && data.error
+    ? data.error
+    : (notFoundText
+      ? 'API route not found. Check Vercel rewrite destination to your Render backend URL.'
+      : `Request failed (${response.status})`);
+
+  return { ok: response.ok, data, error };
+}
+
 async function submitAuth() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
@@ -243,13 +263,13 @@ async function submitAuth() {
       body: JSON.stringify(payload),
     });
 
-    const data = await r.json();
-    if (!r.ok || !data.success) {
-      throw new Error(data.error || 'Authentication failed');
+    const result = await readApiResponse(r);
+    if (!result.ok || !result.data || !result.data.success) {
+      throw new Error(result.error || 'Authentication failed');
     }
 
-    localStorage.setItem('agro_token', data.token);
-    localStorage.setItem('agro_user', JSON.stringify(data.user));
+    localStorage.setItem('agro_token', result.data.token);
+    localStorage.setItem('agro_user', JSON.stringify(result.data.user));
 
     setMsg('Success. Redirecting...', 'ok');
 
@@ -277,8 +297,9 @@ async function requestResetToken() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
-    const data = await r.json();
-    if (!r.ok || !data.success) throw new Error(data.error || 'Failed to generate token');
+    const result = await readApiResponse(r);
+    const data = result.data || {};
+    if (!result.ok || !data.success) throw new Error(result.error || 'Failed to generate token');
 
     if (data.resetToken) {
       document.getElementById('reset-token').value = data.resetToken;
@@ -306,8 +327,9 @@ async function resetPasswordNow() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, password }),
     });
-    const data = await r.json();
-    if (!r.ok || !data.success) throw new Error(data.error || 'Password reset failed');
+    const result = await readApiResponse(r);
+    const data = result.data || {};
+    if (!result.ok || !data.success) throw new Error(result.error || 'Password reset failed');
     setMsg('Password reset successful. You can now login.', 'ok');
     switchMode('login');
   } catch (err) {
